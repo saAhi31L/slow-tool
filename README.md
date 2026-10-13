@@ -64,7 +64,8 @@ A few of the more interesting ones, since the debugging is as much the point of 
 - ✅ ETW process start/exit tracking — verified
 - ✅ ETW disk I/O event tracking (no process attribution yet) — built
 - ⏳ Per-process disk attribution via `Kernel-File` correlation — deferred
-- ⏳ GPU tracking, historical storage, local AI summarizer — deferred
+- ⏳ GPU tracking, historical storage — deferred
+- ⏳ **Local AI summarizer (planned)** — running **Qwen2.5-7B-Instruct** locally to turn a session's raw CSVs into a plain-English summary ("here's what was actually slowing the machine down, and when"), instead of reading three logs by hand. Fully local inference, no cloud API calls — the model only ever reads data this tool already collected, it doesn't touch the capture/correlation pipeline itself.
 
 ## Building
 
