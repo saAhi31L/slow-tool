@@ -1,6 +1,6 @@
 # **SlowTool**
 
-For weeks, my laptop had been acting up — slowing to a crawl, the fan spinning up for no apparent reason. The strange part was that Task Manager never showed anything wrong. CPU, memory, disk, al[...]
+For weeks, my laptop had been acting up — slowing down randomly, torpid response to the activity, the fan spinning up for no apparent reason. It was very frustrating, and th  strange part was that Task Manager and 'top' linux command never showed anything wrong. CPU, memory, disk, al[...]
 
 Slow Tool is a real-time Windows system monitor: it watches CPU, memory, disk, and network usage every second, and the moment something spikes, it logs exactly which process was the top CPU consume[...]
 
