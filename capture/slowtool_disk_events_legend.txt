@@ -1,0 +1,49 @@
+SlowTool disk events log — column reference
+============================================
+
+This explains every column in slowtool_disk_events.csv. One row = one
+physical disk I/O completion, captured in real time via ETW (the
+Microsoft-Windows-Kernel-Disk provider) - not polling, so this catches
+every individual read/write/flush instead of a single aggregate "disk %
+busy" number like the main spike log's PDH counter gives.
+
+timestamp
+    When this happened. A raw Unix epoch number - seconds since Jan 1,
+    1970 UTC, same convention as the other two log files.
+
+direction
+    "read", "write", or "other".
+
+    This is derived from two standard Windows kernel flag bits
+    (IRP_READ_OPERATION / IRP_WRITE_OPERATION) inside the event's IrpFlags
+    field. Confirmed against real captured data: MOST disk I/O does NOT
+    carry either bit - it's very likely cached/paging I/O (e.g. the
+    write-behind flushes that build up when a file is being written, which
+    show up as a growing sequence of transfer sizes rather than one bit-
+    flagged "write"). "other" is an honest bucket for that activity, not a
+    bug or a missing case - this tool does not force a guess onto data that
+    doesn't carry an explicit answer.
+
+disk_number
+    Which physical disk this I/O happened on (0, 1, ...). Most machines
+    with a single drive will only ever show 0.
+
+byte_offset
+    Where on the disk this I/O landed, in bytes from the start of the disk.
+
+transfer_size_bytes
+    How many bytes this one operation moved.
+
+Why this file has no process/application column
+    Unlike slowtool_process_events.csv, disk events do NOT carry a usable
+    process ID. The event's own header PID is always 4 (the "System"
+    process - it reflects where the I/O completion ran, not who requested
+    it), and the event's payload has no ProcessID field at all. Attributing
+    a disk event to a real application would require a separate ETW
+    provider (Kernel-File) and correlating its events to these by a shared
+    internal pointer - a meaningfully larger feature, deferred for now.
+
+Why this file is separate from the other two logs
+    Same reasoning as slowtool_process_events.csv: a disk event is a
+    discrete occurrence with its own row shape, not a measurement with a
+    baseline to compare against, so it stays in its own file.

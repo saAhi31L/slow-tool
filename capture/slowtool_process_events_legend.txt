@@ -1,0 +1,36 @@
+SlowTool process events log — column reference
+================================================
+
+This explains every column in slowtool_process_events.csv. One row = one
+process starting or exiting, captured in real time via ETW (Event Tracing
+for Windows) - not polling, so this can catch processes that start and
+exit entirely between two of the main spike log's 1-second ticks.
+
+timestamp
+    When this happened. A raw Unix epoch number - seconds since Jan 1,
+    1970 UTC, same convention as slowtool_log.csv.
+
+event
+    Either "start" or "exit".
+
+pid
+    The Windows process ID involved.
+
+process_name
+    The executable name (e.g. chrome.exe), where known.
+
+    For "start" events: read directly from the event itself - should
+    almost always be a real name.
+
+    For "exit" events: Windows' exit event does not carry a name field we
+    can decode reliably, so this is recovered from the matching "start"
+    event seen earlier for the same PID. If "(unknown)" appears on an exit
+    row, it means slowtool.exe was not yet running when that process
+    started, so it never saw a start event to learn the name from - not a
+    bug, just a process that predates this run.
+
+Why this file is separate from slowtool_log.csv
+    A process event is a discrete occurrence (it happened or it didn't),
+    not a measurement with a current value and a baseline to compare
+    against - the two don't share a row shape, so they're kept in
+    separate files to stay easy to read and hard to misinterpret.

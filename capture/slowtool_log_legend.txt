@@ -1,0 +1,55 @@
+SlowTool log file — column reference
+=====================================
+
+This explains every column in slowtool_log.csv. One row = one moment where
+a single metric crossed its own recent-normal threshold ("a spike").
+
+timestamp
+    When this spike happened. A raw Unix epoch number — seconds since
+    Jan 1, 1970 UTC. Paste it into any "epoch to date" converter to read
+    it as a real date/time, or convert it with a formula in Excel/Sheets.
+
+metric
+    Which of the four tracked system resources spiked: cpu, memory,
+    disk, or network.
+
+current_value
+    The actual reading for that metric at this exact moment, with its
+    unit written directly after the number (e.g. "52.1%", "181588.0B/s").
+    Note: because the unit is part of the text here, this column sorts
+    and filters as text in Excel, not as a pure number.
+
+baseline_value
+    What was "normal" for that metric over roughly the last 60 seconds
+    before this moment (a rolling average), same unit as current_value.
+    This is what current_value is being compared against.
+
+Units by metric
+      %    - cpu and disk (percent of this machine's total capacity)
+      MB   - memory (megabytes of free/available memory)
+      B/s  - network (bytes per second, summed across all adapters)
+
+top_pid
+    The Windows process ID of whichever single process was using the
+    most CPU at this exact moment — not necessarily the process that
+    caused this specific metric's spike, just the top CPU consumer
+    overall at that instant.
+
+top_process
+    The executable name matching top_pid (e.g. chrome.exe).
+
+top_process_cpu_percent
+    What percent of this machine's total CPU capacity top_process was
+    using at this moment.
+
+Why a row appears at all
+    A row is only written when current_value crosses a threshold
+    relative to baseline_value:
+      cpu / disk / network : current_value > baseline_value x 1.5
+      memory                : current_value < baseline_value / 1.5
+    (memory is inverted because a memory problem means free memory
+    DROPPING, not rising.)
+
+    No rows for a stretch of time is a valid, good result — it means
+    nothing looked abnormal compared to this machine's own recent
+    behavior during that window.
