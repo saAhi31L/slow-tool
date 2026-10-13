@@ -1,10 +1,8 @@
 # Slow Tool
 
-A real-time Windows system monitor built to learn **C++/Zig interoperability** by building something real instead of a toy example. C++ handles all Win32 data capture (performance counters, process enumeration, kernel event tracing); Zig owns correlation, state, and logging. No GUI, no database, no cloud reporting, no LLM calls anywhere in the pipeline — correctness means the numbers are real.
+My laptop had been running noticeably slower for a while — random slowdowns, a fan that would spin up for no obvious reason, that "something is eating my CPU and Task Manager isn't telling me what" feeling. Instead of guessing, I built a tool that would actually show me, with real numbers pulled straight from the machine, what was going on and when.
 
-## Why two languages
-
-C++ has first-class access to the Win32 APIs this needs (PDH, Toolhelp32, ETW) with decades of documentation and examples. Zig was chosen for the analysis layer specifically to work through a real FFI boundary: fixed-size `extern` structs shared byte-for-byte between both languages, manual memory layout (alignment-ordered fields, explicit padding), and zero heap allocation after startup. Every struct crossing the boundary is `extern "C"` on the C++ side and `extern struct` on the Zig side, with a `static_assert`/`comptime` size check on both ends so the two can never silently drift apart.
+Slow Tool is a real-time Windows system monitor: it watches CPU, memory, disk, and network usage every second, and the moment something spikes, it logs exactly which process was the top CPU consumer at that instant. It also taps into Windows' kernel event tracing (ETW) to catch things a once-a-second check would completely miss — like processes that start and exit faster than any polling loop could ever see. No GUI, no database, no cloud reporting, no LLM calls anywhere in the pipeline — just local logs with real answers, built to find the actual root cause instead of guessing at it.
 
 ## Architecture
 
