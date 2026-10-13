@@ -1,4 +1,4 @@
-###SlowTool
+#SlowTool
 
 For weeks, my laptop had been acting up — slowing to a crawl, the fan spinning up for no apparent reason. The strange part was that Task Manager never showed anything wrong. CPU, memory, disk, all looked healthy every time I checked. I started to suspect the problem was happening in bursts too short to catch by eye — gone by the time I alt-tabbed over to see what was using the machine. I was tired of guessing, and tired of a computer that looked fine on paper while clearly struggling in practice. 
 
